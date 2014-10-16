@@ -23,10 +23,10 @@ do
 done
 
 if [ -f $LOCK ]; then
-	echo "$ERROR $(date "+%d/%b/%Y:%H:%M:%S") still got $LOCK , I'm aborted. Fix me." >> $LOG
-	exit 0
+  echo "$ERROR $(date "+%d/%b/%Y:%H:%M:%S") still got $LOCK , I'm aborted. Fix me." >> $LOG
+  exit 0
 #else
-#	echo "$INFO $(date "+%d/%b/%Y:%H:%M:%S") $LOCK was released, let's continue." >> $LOG
+# echo "$INFO $(date "+%d/%b/%Y:%H:%M:%S") $LOCK was released, let's continue." >> $LOG
 fi
 
 # create the lock
@@ -39,30 +39,30 @@ echo "$INFO $(date "+%d/%b/%Y:%H:%M:%S") vpnup" >> $LOCK
 OLDGW=$(nvram get wan_gateway)
 
 case $1 in
-		"pptp")
-			case "$(nvram get router_name)" in
-				"tomato")
-					#VPNSRV=$(nvram get pptpd_client_srvip)
-					#VPNSRVSUB=$(nvram get pptpd_client_srvsub)
-					#PPTPDEV=$(nvram get pptp_client_iface)
-					OLDGW=$(nvram get wan_gateway_get)
-					VPNGW=$(nvram get pptp_client_srvsub)
-					;;
-				"DD-WRT")
-					PPTPSRV=$(nvram get pptpd_client_srvip)
-					VPNGW=$(nvram get pptp_gw)
-					;;
-			esac
-			;;
-		"openvpn")
-			OPENVPNSRV=$(nvram get openvpncl_remoteip)
-			OPENVPNDEV='tun0'
-			VPNGW=$(ifconfig $OPENVPNDEV | grep -Eo "P-t-P:([0-9.]+)" | cut -d: -f2)
-			;;
-		*)
-			echo "$INFO $(date "+%d/%b/%Y:%H:%M:%S") unknown vpndown.sh parameter, quit." >> $LOCK
-			exit 1
-			;;
+    "pptp")
+      case "$(nvram get router_name)" in
+        "tomato")
+          #VPNSRV=$(nvram get pptpd_client_srvip)
+          #VPNSRVSUB=$(nvram get pptpd_client_srvsub)
+          #PPTPDEV=$(nvram get pptp_client_iface)
+          OLDGW=$(nvram get wan_gateway_get)
+          VPNGW=$(nvram get pptp_client_srvsub)
+          ;;
+        "DD-WRT")
+          PPTPSRV=$(nvram get pptpd_client_srvip)
+          VPNGW=$(nvram get pptp_gw)
+          ;;
+      esac
+      ;;
+    "openvpn")
+      OPENVPNSRV=$(nvram get openvpncl_remoteip)
+      OPENVPNDEV='tun0'
+      VPNGW=$(ifconfig $OPENVPNDEV | grep -Eo "P-t-P:([0-9.]+)" | cut -d: -f2)
+      ;;
+    *)
+      echo "$INFO $(date "+%d/%b/%Y:%H:%M:%S") unknown vpndown.sh parameter, quit." >> $LOCK
+      exit 1
+      ;;
 esac
 
 
@@ -73,8 +73,8 @@ echo "[INFO] removing the static routes"
 #route -n | awk '$2 ~ /192.168.172.254/{print $1,$3}'  | while read x y
 route -n | awk '$NF ~ /tun0/{print $1,$3}' | while read x y
 do
-	echo "deleting $x $y"
-	route del -net $x netmask $y
+  echo "deleting $x $y"
+  route del -net $x netmask $y
 done
 ##### end batch route #####
 
